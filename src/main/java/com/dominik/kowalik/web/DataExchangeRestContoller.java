@@ -1,25 +1,34 @@
 package com.dominik.kowalik.web;
 
 import com.dominik.kowalik.model.LocationInfo;
-import com.dominik.kowalik.model.LocationInfoImpl;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by dominik on 2016-10-19.
  */
 
 @RestController
-public class DataExchangeRestContoller{
+@RequestMapping("Locator")
+public class DataExchangeRestContoller {
+    private final Logger logger = LoggerFactory.getLogger( "***********INFO***********");
 
     @Autowired
-    LocationInfoImpl locationInfoImpl;
-    int i = 0 ;
+    LocationInfo locationInfo;
 
-    @RequestMapping("/getLocationInfo")
-    public LocationInfoImpl getLocationInfo(){
-        locationInfoImpl.setLatitude(i++ + "");
-        return locationInfoImpl;
+    @GetMapping("/getLocation")
+    public LocationInfo getLocationInfo() {
+         logger.info("Locator/getLocation");
+        return locationInfo;
+    }
+
+    @PostMapping("/setLocation")
+    public void setLocationInfo(@RequestBody LocationInfo locationInfo) {
+        logger.info("Locator/setLocation");
+        this.locationInfo = locationInfo;
+        logger.info(locationInfo.toString());
     }
 }

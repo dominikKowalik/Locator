@@ -1,14 +1,35 @@
 package com.dominik.kowalik.model;
 
-/**
- * Created by dominik on 2016-10-19.
- */
+import org.springframework.stereotype.Service;
 
-/**
- * Helps to exchange geographical data with rest api
- */
+@Service("locationInfo")
+public class LocationInfo{
+    double latitude;
+    double longitude;
 
-public interface LocationInfo {
-    public String getLatitude();
-    public void setLatitude(String latitude);
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public LocationInfo(){}
+
+    @Override
+    public String toString() {
+        return "LocationInfo{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
