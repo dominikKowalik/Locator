@@ -2,10 +2,19 @@ package com.dominik.kowalik.model;
 
 import org.springframework.stereotype.Service;
 
+import javax.persistence.*;
+
+
 @Service("locationInfo")
-public class LocationInfo{
-    double latitude;
-    double longitude;
+@Entity
+
+public class LocationInfo {
+    private double latitude;
+    private double longitude;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     public double getLongitude() {
         return longitude;
@@ -23,7 +32,16 @@ public class LocationInfo{
         return latitude;
     }
 
-    public LocationInfo(){}
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocationInfo() {
+    }
 
     @Override
     public String toString() {
