@@ -1,24 +1,19 @@
 package com.dominik.kowalik.web;
 
-import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
-import com.dominik.kowalik.model.UserDao;
-import com.dominik.kowalik.model.UserInterface;
-import com.mysql.fabric.Response;
+import com.dominik.kowalik.DAL.UserDao;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,15 +29,10 @@ public class DataExchangeRestContoller {
     @Autowired
     UserDao userDao;
 
-    //retrive all users
-    @GetMapping(value  ="/user/" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> listAllUsers() {
 
-
-        List<User> users = new ArrayList<>();
-        Iterable<User> userIterator = userDao.findAll();
-        userIterator.forEach(users::add);
-
+    @GetMapping(value  ="/user")
+    public ResponseEntity<List<User>> listAllUsers(){
+        List<User> users = (List<User>) userDao.findAll();
         logger.info(users.get(0).toString());
 
         if (users.isEmpty()) {
@@ -51,7 +41,6 @@ public class DataExchangeRestContoller {
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
-
 
     //     Retrive single user
     @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,19 +54,22 @@ public class DataExchangeRestContoller {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
-//    create a User
-//    @PostMapping(value = "/user/")
-//    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder uriComponentsBuilder) {
-////        logger.info("Creating user" + user.getName());
-////        if (userDao.ifUserExists(user)) {
-////            logger.info("A user with name " + user.getName() + " already exist");
-////        }
-////
-////        userDao.save(user);
-////        HttpHeaders headers = new HttpHeaders();
-////        headers.setLocation(uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
-////        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-//    }
+
+    @PostMapping(value = "user" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createUser(@RequestBody User user) {
+         logger.info("Creating user" + user.getName());
+
+        //TODO
+//       if(userDao.exists(user)) {
+//            logger.info("A user with name " + user.getName() + " already exist");
+//       }
+
+        userDao.save(user);
+
+       HttpHeaders headers = new HttpHeaders();
+      //  headers.setLocation(uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
+       return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
 
     //    Delete a User
     @DeleteMapping(value = "/user/{id}")
@@ -94,10 +86,9 @@ public class DataExchangeRestContoller {
     }
 
     //    delete all users
-    @RequestMapping(value = "/user/")
+    @DeleteMapping(value = "/user/")
     public ResponseEntity<User> deleteAllUsers() {
         logger.info("Deleting all users");
-
         userDao.deleteAll();
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
     }

@@ -1,5 +1,6 @@
-package com.dominik.kowalik.model;
+package com.dominik.kowalik.DAL;
 
+import com.dominik.kowalik.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import java.util.List;
 @Transactional
 @Service
 
-public interface UserDao extends CrudRepository<User, Long>{
+public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom{
+
+
 }
 

@@ -19,4 +19,8 @@ public interface UserInterface{
     public LocationInfo getLocationInfo();
 
     public void setLocationInfo(LocationInfo locationInfo);
+//
+//    public boolean isExists();
+//
+//    public void setExists(boolean exists);
 }
