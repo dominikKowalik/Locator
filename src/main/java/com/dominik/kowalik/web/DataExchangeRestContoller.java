@@ -86,14 +86,18 @@ public class DataExchangeRestContoller {
 
     @PostMapping(value = "user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createUser(@RequestBody User user) {
-        logger.info("Creating user" + user.getName());
 
-        Object object = userDao.findByNameAndLastNameAndEmailAdress(user.getName(), user.getLastName(), user.getEmailAdress());
-        if (!Objects.equals(object, null)) {
-            logger.info("A user with name " + user.getName() + " already exist");
+        logger.info("Creating user" + user.getName());
+        User user1 = userDao.findByNameAndLastNameAndEmailAdress(user.getName(), user.getLastName(), user.getEmailAdress());
+
+        /**
+         * the way to update user if exists they will be auto-perist by hibernate
+         */
+        if (!Objects.equals(user1, null)) {
+            logger.info("A user with name " + user.getName() + " already exist they will be updated");
+            user1.updateUser(user);
         }
         userDao.save(user);
-
         HttpHeaders headers = new HttpHeaders();
         //TODO
         //   headers.setLocation(uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());

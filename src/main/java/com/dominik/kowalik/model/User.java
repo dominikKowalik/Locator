@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,34 @@ public class User implements UserInterface {
     private String name;
     private String lastName;
     private String statement;
+
+    public User(String name, String lastName, String emailAdress, String password) {
+        this.name = name;
+        this.lastName = lastName;
+        this.emailAdress = emailAdress;
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    private String password;
+
+    public void updateUser(User user){
+        this.emailAdress = user.getEmailAdress();
+        this.friends = new ArrayList<>(user.getFriends());
+        this.lastName = user.getLastName();
+        this.name = user.getName();
+        this.locationInfo.setLatitude(user.getLocationInfo().getLatitude());
+        this.locationInfo.setLongitude(user.getLocationInfo().getLongitude());
+        this.statement = user.getStatement();
+        this.password = user.getPassword();
+    }
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<User> friends;
@@ -47,14 +76,6 @@ public class User implements UserInterface {
 
 
     public  User(){
-    }
-
-    public User(String emailAdress, String name, String lastName, boolean exists, String statement, LocationInfo locationInfo){
-        this.emailAdress = emailAdress;
-        this.name = name;
-        this.lastName = lastName;
-        this.statement = statement;
-        this.locationInfo = locationInfo;
     }
 
     public String getEmailAdress() {
