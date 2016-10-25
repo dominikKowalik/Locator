@@ -12,10 +12,8 @@ import java.util.List;
  * Created by dominik on 2016-10-22.
  */
 @Transactional
-@Service
-
-public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom{
-
-
+@Repository
+public interface UserDao extends CrudRepository<User, Long>{
+    public User findByNameAndLastNameAndEmailAdress(String name, String lastName, String emailAdress);
 }
 

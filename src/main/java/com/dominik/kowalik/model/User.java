@@ -1,6 +1,5 @@
 package com.dominik.kowalik.model;
 
-import org.hibernate.annotations.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class User implements UserInterface {
     private String emailAdress;
     private String name;
     private String lastName;
-    //private boolean exists;
+    private String statement;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<User> friends;
@@ -32,15 +31,30 @@ public class User implements UserInterface {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+//    public static float distFrom(User user1, User user2) {
+//        double earthRadius = 6371000; //meters
+//        double dLat = Math.toRadians(user2.getLocationInfo().getLatitude()-user1.getLocationInfo().getLatitude());
+//        double dLng = Math.toRadians(user2.getLocationInfo().getLongitude()-user2.getLocationInfo().getLongitude());
+//        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+//                Math.cos(Math.toRadians(user1.getLocationInfo().getLatitude())) *
+//                        Math.cos(Math.toRadians(user2.getLocationInfo().getLongitude())) *
+//                        Math.sin(dLng/2) * Math.sin(dLng/2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//        float dist = (float) (earthRadius * c);
+//        return dist;
+//    }
+
+
+
     public  User(){
     }
 
-    public User(String emailAdress, String name, String lastName,boolean exists, LocationInfo locationInfo){
+    public User(String emailAdress, String name, String lastName, boolean exists, String statement, LocationInfo locationInfo){
         this.emailAdress = emailAdress;
         this.name = name;
         this.lastName = lastName;
+        this.statement = statement;
         this.locationInfo = locationInfo;
-    //    this.exists = exists;
     }
 
     public String getEmailAdress() {
@@ -94,6 +108,23 @@ public class User implements UserInterface {
         sb.append('}');
         return sb.toString();
     }
+
+    public String getStatement() {
+        return statement;
+    }
+
+    public void setStatement(String statement) {
+        this.statement = statement;
+    }
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
+    }
+
 // TODO
 //    public boolean isExists() {
 //        return exists;
