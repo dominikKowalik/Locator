@@ -1,5 +1,6 @@
 package com.dominik.kowalik.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -13,52 +14,52 @@ import java.util.List;
  * Created by dominik on 2016-10-22.
  */
 
+/**
+ * this class represents user's state which could be visible for another users
+ */
+
 @Entity
 @Service
-@Qualifier("user")
-public class User implements UserInterface {
+public class User{
     private String emailAdress;
-    private String name;
-    private String lastName;
+    private String username;
     private String statement;
-
-    public User(String name, String lastName, String emailAdress, String password) {
-        this.name = name;
-        this.lastName = lastName;
-        this.emailAdress = emailAdress;
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    private String password;
-
-    public void updateUser(User user){
-        this.emailAdress = user.getEmailAdress();
-        this.friends = new ArrayList<>(user.getFriends());
-        this.lastName = user.getLastName();
-        this.name = user.getName();
-        this.locationInfo.setLatitude(user.getLocationInfo().getLatitude());
-        this.locationInfo.setLongitude(user.getLocationInfo().getLongitude());
-        this.statement = user.getStatement();
-        this.password = user.getPassword();
-    }
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private List<User> friends;
-
-    @OneToOne(cascade=CascadeType.ALL)
-    private LocationInfo locationInfo;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @Autowired
+    private List<User> friends;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @Autowired
+    private LocationInfo locationInfo;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public User(String userName, String emailAdress) {
+        this.username = userName;
+        this.emailAdress = emailAdress;
+    }
+
+    public void updateUser(User user){
+        this.emailAdress = user.getEmailAdress();
+        this.friends = new ArrayList<>(user.getFriends());
+        this.username = user.getUsername();
+        this.locationInfo.setLatitude(user.getLocationInfo().getLatitude());
+        this.locationInfo.setLongitude(user.getLocationInfo().getLongitude());
+        this.statement = user.getStatement();
+
+    }
+
 
 //    public static float distFrom(User user1, User user2) {
 //        double earthRadius = 6371000; //meters
@@ -72,9 +73,6 @@ public class User implements UserInterface {
 //        float dist = (float) (earthRadius * c);
 //        return dist;
 //    }
-
-
-
     public  User(){
     }
 
@@ -84,22 +82,6 @@ public class User implements UserInterface {
 
     public void setEmailAdress(String emailAdress) {
         this.emailAdress = emailAdress;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public LocationInfo getLocationInfo() {
@@ -118,18 +100,6 @@ public class User implements UserInterface {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("User{");
-        sb.append("emailAdress='").append(emailAdress).append('\'');
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", locationInfo=").append(locationInfo);
-        sb.append(", id=").append(id);
-        sb.append('}');
-        return sb.toString();
-    }
-
     public String getStatement() {
         return statement;
     }
@@ -146,12 +116,16 @@ public class User implements UserInterface {
         this.friends = friends;
     }
 
-// TODO
-//    public boolean isExists() {
-//        return exists;
-//    }
-//
-//    public void setExists(boolean exists) {
-//        this.exists = exists;
-//    }
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("emailAdress='").append(emailAdress).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", statement='").append(statement).append('\'');
+        sb.append(", friends=").append(friends);
+        sb.append(", locationInfo=").append(locationInfo);
+        sb.append(", id=").append(id);
+        sb.append('}');
+        return sb.toString();
+    }
 }

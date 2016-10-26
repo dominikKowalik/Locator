@@ -4,10 +4,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 
-
-@Service("locationInfo")
 @Entity
-
+@Service
 public class LocationInfo {
     private double latitude;
     private double longitude;
