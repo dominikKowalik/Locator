@@ -2,6 +2,7 @@ package com.dominik.kowalik.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -18,10 +19,22 @@ import java.util.List;
  * this class represents user's state which could be visible for another users
  */
 
+
+
+
 @Entity
 @Service
+@Scope(value = "prototype")
 public class User{
-    private String emailAdress;
+
+    public void setLocationInfo(LocationInfo locationInfo) {
+        this.locationInfo = locationInfo;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private String username;
     private String statement;
 
@@ -29,35 +42,24 @@ public class User{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @Autowired
-    private List<User> friends;
+    public void setFriends(List<UsersName> friends) {
+        this.friends = friends;
+    }
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToMany(cascade = {CascadeType.MERGE})
     @Autowired
+    private List<UsersName> friends;
+    @Autowired
+    @OneToOne( cascade={CascadeType.MERGE})
+
     private LocationInfo locationInfo;
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public User(String userName, String emailAdress) {
+    public User(String userName) {
         this.username = userName;
-        this.emailAdress = emailAdress;
-    }
-
-    public void updateUser(User user){
-        this.emailAdress = user.getEmailAdress();
-        this.friends = new ArrayList<>(user.getFriends());
-        this.username = user.getUsername();
-        this.locationInfo.setLatitude(user.getLocationInfo().getLatitude());
-        this.locationInfo.setLongitude(user.getLocationInfo().getLongitude());
-        this.statement = user.getStatement();
-
     }
 
 
@@ -76,20 +78,8 @@ public class User{
     public  User(){
     }
 
-    public String getEmailAdress() {
-        return emailAdress;
-    }
-
-    public void setEmailAdress(String emailAdress) {
-        this.emailAdress = emailAdress;
-    }
-
     public LocationInfo getLocationInfo() {
         return locationInfo;
-    }
-
-    public void setLocationInfo(LocationInfo locationInfo) {
-        this.locationInfo = locationInfo;
     }
 
     public long getId() {
@@ -108,18 +98,10 @@ public class User{
         this.statement = statement;
     }
 
-    public List<User> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(List<User> friends) {
-        this.friends = friends;
-    }
 
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("User{");
-        sb.append("emailAdress='").append(emailAdress).append('\'');
         sb.append(", username='").append(username).append('\'');
         sb.append(", statement='").append(statement).append('\'');
         sb.append(", friends=").append(friends);
@@ -127,5 +109,9 @@ public class User{
         sb.append(", id=").append(id);
         sb.append('}');
         return sb.toString();
+    }
+
+    public List<UsersName> getFriends() {
+        return friends;
     }
 }

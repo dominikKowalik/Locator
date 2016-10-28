@@ -1,11 +1,13 @@
 package com.dominik.kowalik.model;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 
 @Entity
 @Service
+@Scope("prototype")
 public class LocationInfo {
     private double latitude;
     private double longitude;
