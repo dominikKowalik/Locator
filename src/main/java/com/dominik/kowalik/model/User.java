@@ -31,7 +31,7 @@ public class User{
         this.locationInfo = locationInfo;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(String username){
         this.username = username;
     }
 
@@ -46,12 +46,11 @@ public class User{
         this.friends = friends;
     }
 
-    @OneToMany(cascade = {CascadeType.MERGE})
-    @Autowired
+    @ManyToMany(cascade = {CascadeType.MERGE})
     private List<UsersName> friends;
+
     @Autowired
     @OneToOne( cascade={CascadeType.MERGE})
-
     private LocationInfo locationInfo;
 
     public String getUsername() {
@@ -97,7 +96,6 @@ public class User{
     public void setStatement(String statement) {
         this.statement = statement;
     }
-
 
     @Override
     public String toString() {

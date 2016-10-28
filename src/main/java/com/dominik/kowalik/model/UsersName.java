@@ -13,9 +13,7 @@ import javax.persistence.Id;
  */
 @Entity
 @Service
-@Scope(value = "prototype")
 public class UsersName{
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
