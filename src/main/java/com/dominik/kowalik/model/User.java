@@ -42,12 +42,12 @@ public class User{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    public void setFriends(List<UsersName> friends) {
+    public void setFriends(List<FriendsName> friends) {
         this.friends = friends;
     }
 
     @ManyToMany(cascade = {CascadeType.MERGE})
-    private List<UsersName> friends;
+    private List<FriendsName> friends;
 
     @Autowired
     @OneToOne( cascade={CascadeType.MERGE})
@@ -109,7 +109,7 @@ public class User{
         return sb.toString();
     }
 
-    public List<UsersName> getFriends() {
+    public List<FriendsName> getFriends() {
         return friends;
     }
 }

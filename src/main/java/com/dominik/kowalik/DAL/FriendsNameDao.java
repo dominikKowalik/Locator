@@ -1,8 +1,8 @@
 package com.dominik.kowalik.DAL;
 
+import com.dominik.kowalik.model.FriendsName;
 import com.dominik.kowalik.model.User;
-import com.dominik.kowalik.model.UsersName;
-import org.springframework.data.repository.CrudRepository;
+ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,5 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Repository
-public interface UsersNameDao extends CrudRepository<UsersName, Long> {
+public interface FriendsNameDao extends CrudRepository<FriendsName, Long> {
 }

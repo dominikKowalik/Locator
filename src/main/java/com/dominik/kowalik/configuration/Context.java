@@ -2,9 +2,10 @@ package com.dominik.kowalik.configuration;
 
 
 import com.dominik.kowalik.model.Account;
+import com.dominik.kowalik.model.FriendsName;
 import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
-import com.dominik.kowalik.model.UsersName;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -45,9 +46,5 @@ public class Context{
 
     @Bean
     @Scope("prototype")
-    public UsersName createUseresName(){return new UsersName();}
-
-
-
-
+    public FriendsName createUseresName(){return new FriendsName();}
 }

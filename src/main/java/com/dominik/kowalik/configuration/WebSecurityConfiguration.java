@@ -11,12 +11,22 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 import sun.reflect.annotation.ExceptionProxy;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by dominik on 2016-10-26.
@@ -29,14 +39,13 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
     @Autowired
     AccountDao accountDao;
 
-
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService());
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
+    UserDetailsService userDetailsService(){
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -54,11 +63,24 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 
     @EnableWebSecurity
     @Configuration
-    class  WebSecurityConfig extends WebSecurityConfigurerAdapter{
+    class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        private String REALM = "MY_TEST_REALM";
+
         @Override
-        protected void configure(HttpSecurity http) throws Exception{
-            http.authorizeRequests().antMatchers("/register").permitAll().anyRequest().
-                    authenticated().and().formLogin().permitAll().and().csrf().disable();
+        protected void configure(HttpSecurity http) throws Exception {
+            http.csrf().disable().authorizeRequests().antMatchers("/register").permitAll().anyRequest().
+                    authenticated().and().httpBasic()
+                    .authenticationEntryPoint(getBasicAuthEntryPoint()).and().
+                    sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().
+                    logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout").permitAll();
+        }
+
+        @Bean
+        public CustomBasicAuthenticationEntryPoint getBasicAuthEntryPoint() {
+            return new CustomBasicAuthenticationEntryPoint();
         }
     }
+
+
 }

@@ -36,6 +36,12 @@ dependencies {
 	compile("mysql:mysql-connector-java:5.1.34")
 // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
 	compile group: 'com.sun.mail', name: 'javax.mail', version: '1.5.6'
+	// https://mvnrepository.com/artifact/org.webjars/angularjs
+	compile group: 'org.webjars', name: 'angularjs', version: '1.5.8'
+	// https://mvnrepository.com/artifact/org.webjars/jquery
+	compile group: 'org.webjars', name: 'jquery', version: '2.1.4'
+
+
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

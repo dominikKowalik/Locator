@@ -13,7 +13,7 @@ import javax.persistence.Id;
  */
 @Entity
 @Service
-public class UsersName{
+public class FriendsName{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

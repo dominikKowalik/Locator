@@ -2,10 +2,10 @@ package com.dominik.kowalik.web;
 
 
 import com.dominik.kowalik.DAL.AccountDao;
+import com.dominik.kowalik.DAL.FriendsNameDao;
 import com.dominik.kowalik.DAL.LocationInfoDao;
 import com.dominik.kowalik.DAL.UserDao;
-import com.dominik.kowalik.DAL.UsersNameDao;
-import com.dominik.kowalik.model.Account;
+  import com.dominik.kowalik.model.Account;
 import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
 import org.slf4j.Logger;
@@ -42,8 +42,7 @@ public class RegistrationController implements ApplicationContextAware {
     LocationInfoDao locationInfoDao;
 
     @Autowired
-    UsersNameDao usersNameDao;
-
+    FriendsNameDao usersNameDao;
 
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody Account account) {
@@ -65,12 +64,8 @@ public class RegistrationController implements ApplicationContextAware {
             HttpHeaders httpHeaders = (HttpHeaders) applicationContext.getBean("httpHeaders");
             return new ResponseEntity<User>(httpHeaders, HttpStatus.OK);
         }
-
-
         logger.info("account" + account.toString() + "already exists");
         return new ResponseEntity<User>(HttpStatus.CONFLICT);
-
-
     }
 
     @DeleteMapping(value = "/{id}")
@@ -90,8 +85,9 @@ public class RegistrationController implements ApplicationContextAware {
      *
      * @return
      */
+
     @DeleteMapping()
-    public ResponseEntity<User> deleteAllAccounts() {
+    public ResponseEntity<User> deleteAllAccounts(){
         logger.info("Deleting all users");
         accountDao.deleteAll();
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
