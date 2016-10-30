@@ -45,7 +45,7 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
     }
 
     @Bean
-    UserDetailsService userDetailsService(){
+    UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -69,7 +69,7 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().authorizeRequests().antMatchers("/register").permitAll().anyRequest().
+            http.csrf().disable().authorizeRequests().antMatchers("/", "/app.js", "/index.js", "/authInterceptor.js").permitAll().anyRequest().
                     authenticated().and().httpBasic()
                     .authenticationEntryPoint(getBasicAuthEntryPoint()).and().
                     sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().

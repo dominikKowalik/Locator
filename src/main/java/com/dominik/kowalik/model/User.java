@@ -62,7 +62,7 @@ public class User{
     }
 
 
-//    public static float distFrom(User user1, User user2) {
+    //    public static float distFrom(User user1, User user2) {
 //        double earthRadius = 6371000; //meters
 //        double dLat = Math.toRadians(user2.getLocationInfo().getLatitude()-user1.getLocationInfo().getLatitude());
 //        double dLng = Math.toRadians(user2.getLocationInfo().getLongitude()-user2.getLocationInfo().getLongitude());

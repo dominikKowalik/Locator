@@ -27,7 +27,6 @@ public class UserController {
     @Autowired
     UserDao userDao;
 
-
     //    CRUD
     @GetMapping()
     public ResponseEntity<List<User>> listAllUsers(){

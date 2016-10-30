@@ -1,24 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="jquery-3.1.1.min.js"></script>
+     <!--Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+    <title>login</title>
 </head>
 <body>
-<div ng-app="locator" ng-controller="getUser">
 
-    <p>{{username}}</p>
-    <p>{{statement}}</p>
+<div ng-app="locator" ng-controller="loginController" class="container">
 
-    <form ng-submit="getUser(userName)">
-    <input type="text" ng-model="userName"/>
-    <input type="submit" value="Pobierz Kolege"/>
-    </form>
+    <div class="col-xs-4" >
+    </div>
+
+
+    <div>
+        <div class="col-xs-4">
+            <form ng-submit="logIn()">
+                <div style="margin:200px 0 5px 0">
+                    <div class="row">
+                        <input style="margin:0px 0 5px 0" id="username" ng-model="user" class="form-control" type="text"
+                               placeholder="Wprowadź nazwe użytkownika">
+                    </div>
+                    <div class="row">
+                        <input id="password" ng-model="pass" style="margin:0 0 5px 0"  type="password" class="form-control"
+                               placeholder="Wprowadź hasło">
+                    </div>
+                    <div class="row">
+                        <input type="submit"  style="margin:0 0 5px 0"  class="btn btn-primary btn-block"
+                               value="Zaloguj się">
+                    </div>
+                    <div class="row" ng-hide="isHidden">
+                        <div  class="alert alert-warning">
+                        <p class="text-center">{{result}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <p class="text-center">{{encodedString}}</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-xs-4">
+    </div>
+
+    <script src="index.js"/>
 
 </div>
-<script src="index.js">
-</script>
-
 </body>
 </html>
 
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
+    <!--<script src="jquery-3.1.1.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div ng-app="locator" ng-controller="getUser">-->
+
+    <!--<p>{{username}}</p>-->
+    <!--<p>{{statement}}</p>-->
+
+    <!--<form ng-submit="getUser1(userName)">-->
+        <!--<input type="text" ng-model="userName"/>-->
+        <!--<input type="submit" value="Pobierz Kolege"/>-->
+    <!--</form>-->
+
+<!--</div>-->
+<!--<script src="index.js">-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
