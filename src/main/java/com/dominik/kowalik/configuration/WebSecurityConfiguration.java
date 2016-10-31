@@ -69,11 +69,10 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().authorizeRequests().antMatchers("/", "/app.js", "/index.js", "/authInterceptor.js").permitAll().anyRequest().
+            http.csrf().disable().authorizeRequests().antMatchers("/","/index.js").permitAll().antMatchers("/register/**").permitAll().anyRequest().
                     authenticated().and().httpBasic()
                     .authenticationEntryPoint(getBasicAuthEntryPoint()).and().
-                    sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().
-                    logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout").permitAll();
+                    sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         }
 
         @Bean
