@@ -44,6 +44,12 @@ public class RegistrationController implements ApplicationContextAware {
     @Autowired
     FriendsNameDao usersNameDao;
 
+    @GetMapping("/exists")
+    public ResponseEntity<User> exists(){
+        logger.info("exists");
+        return new ResponseEntity<User>(HttpStatus.OK);
+    }
+
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody Account account) {
         Account account1 = (Account) applicationContext.getBean("account");
@@ -65,36 +71,6 @@ public class RegistrationController implements ApplicationContextAware {
             return new ResponseEntity<User>(httpHeaders, HttpStatus.OK);
         }
         logger.info("account" + account.toString() + "already exists");
-        return new ResponseEntity<User>(HttpStatus.CONFLICT);
-    }
-
-    @PostMapping("{username}/{password}/{email}")
-    public ResponseEntity<User> registerUser(@PathVariable("username") String username, @PathVariable("password") String password
-    ,@PathVariable("email") String email) {
-
-        logger.info(username);
-        logger.info(email);
-        logger.info(password);
-
-        Account account1 = (Account) applicationContext.getBean("account");
-
-        if (Objects.equals(accountDao.findByUsername(username), null)) {
-            logger.info("creating account" + username);
-            account1.setEmail(email);
-            account1.setPassword(password);
-            account1.setUsername(username);
-            account1.getUser().setUsername(username);
-            account1.getUser().setUsername(account1.getUsername());
-
-            locationInfoDao.save(account1.getUser().getLocationInfo());
-            usersNameDao.save(account1.getUser().getFriends());
-            userDao.save(account1.getUser());
-            accountDao.save(account1);
-
-            HttpHeaders httpHeaders = (HttpHeaders) applicationContext.getBean("httpHeaders");
-            return new ResponseEntity<User>(httpHeaders, HttpStatus.OK);
-        }
-        logger.info("account" + username + "already exists");
         return new ResponseEntity<User>(HttpStatus.CONFLICT);
     }
 

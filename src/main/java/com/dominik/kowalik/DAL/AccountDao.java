@@ -14,4 +14,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AccountDao extends CrudRepository<Account, Long>{
 public Account findByUsername(String username);
+
 }

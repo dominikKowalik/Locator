@@ -1,28 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <!--Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <title>login</title>
 </head>
 <body>
 
-<div ng-app="locator" ng-controller="loginController" class="container">
+<div ng-app="locator" class="container">
+    <!--app form-->
 
-    <div class="col-xs-4">
+    <div ng-hide="isAppHidden" ng-controller="appController">
+
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Lokalizer</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="">{{username}}</a></li>
+                    <li><a ng-click="listFriends()" href="">Znajomi</a></li>
+                    <li><a ng-click="addFriend()" href="">Dodaj Znajomego</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <table  class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Nazwa użytkownika</th>
+                <th>Komunikat</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="x in names">
+                <td>{{x.username}}</td>
+                <td>{{x.statement}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
     </div>
 
 
 
-    <!--login form-->
-    <div class="col-xs-4 " style="margin:100px 0 5px 0" ng-cloak ng-hide="isLoginFormHidden" >
-        <div class="panel-body">
-            <h3 class="text-center text-info">Logowanie</h3>
+    <!--registration and login forms-->
+    <div ng-hide="isLoginRegisterHidden" ng-controller="loginController">
+
+        <div class="col-xs-4">
+        </div>
+
+        <!--login form-->
+        <div class="col-xs-4 " style="margin:100px 0 5px 0" ng-cloak ng-hide="isLoginFormHidden">
+            <div class="panel-body">
+                <h3 class="text-center text-info">Logowanie</h3>
                 <div class="row">
                     <input style="margin:0px 0 5px 0" id="username" ng-model="user" class="form-control" type="text"
                            placeholder="Wprowadź nazwe użytkownika">
@@ -40,20 +74,21 @@
                         Nie masz konta? Zarejestruj się!
                     </button>
                 </div>
-        </div>
-        <div class="row" ng-hide="isHidden">
-            <div class="alert alert-warning">
-                <p class="text-center">{{result}}</p>
+            </div>
+            <div class="row" ng-hide="isHidden">
+                <div class="alert alert-warning">
+                    <p class="text-center">{{result}}</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!--register form-->
-    <div class="col-xs-4 " style="margin:100px 0 5px 0" ng-cloak ng-hide="isRegisterFormHidden">
-        <div class="panel-body">
-                    <h3 class="text-center text-info">Rejestracja</h3>
+        <!--register form-->
+        <div class="col-xs-4 " style="margin:100px 0 5px 0" ng-cloak ng-hide="isRegisterFormHidden">
+            <div class="panel-body">
+                <h3 class="text-center text-info">Rejestracja</h3>
                 <div class="row">
-                    <input style="margin:0px 0 5px 0" id="usernameR" ng-model="usernameR" class="form-control" type="text"
+                    <input style="margin:0px 0 5px 0" id="usernameR" ng-model="usernameR" class="form-control"
+                           type="text"
                            placeholder="Wprowadź nazwe użytkownika">
                 </div>
                 <div class="row">
@@ -67,7 +102,7 @@
                            placeholder="Powtórz hasło">
                 </div>
                 <div class="row">
-                    <input id="email" ng-model="emailR" style="margin:0 0 5px 0" type="email"
+                    <input required id="email" ng-model="emailR" style="margin:0 0 5px 0" type="email"
                            class="form-control"
                            placeholder="Wprowadź e-mail">
                 </div>
@@ -76,21 +111,31 @@
                         Zarejestruj się
                     </button>
                 </div>
-            <div class="row" ng-hide="isHidden">
-                <div class="alert alert-warning">
-                    <p class="text-center">{{result}}</p>
+                <div class="row">
+                    <button ng-click="showOppositeForm()" style="margin:0 0 5px 0" class="btn btn-success btn-block">
+                        Wróć do logowania
+                    </button>
+                </div>
+                <div class="row" ng-hide="isHidden">
+                    <div class="alert alert-warning">
+                        <p class="text-center">{{result}}</p>
+                    </div>
+                </div>
+                <div class="row" ng-hide="isHiddenSuccess">
+                    <div class="alert alert-success">
+                        <p class="text-center">{{result}}</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+
+        <div class="col-xs-4">
+        </div>
+
     </div>
-
-
-    <div class="col-xs-4">
-    </div>
-
 
     <script src="index.js"/>
-
 </div>
 </body>
 </html>
