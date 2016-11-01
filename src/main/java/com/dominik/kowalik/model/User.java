@@ -46,7 +46,13 @@ public class User{
         this.friends = friends;
     }
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    public void addFriend(FriendsName username){
+        friends.add(username);
+    }
+
+   @ElementCollection
+   @Autowired
+   @Qualifier("friendslist")
     private List<FriendsName> friends;
 
     @Autowired

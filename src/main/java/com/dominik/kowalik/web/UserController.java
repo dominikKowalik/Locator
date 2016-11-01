@@ -1,5 +1,7 @@
 package com.dominik.kowalik.web;
 
+import com.dominik.kowalik.DAL.FriendsNameDao;
+import com.dominik.kowalik.model.FriendsName;
 import com.dominik.kowalik.model.User;
 import com.dominik.kowalik.DAL.UserDao;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,12 +30,14 @@ public class UserController {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    FriendsNameDao friendsNameDao;
+
     //    CRUD
     @GetMapping()
-    public ResponseEntity<List<User>> listAllUsers(){
+    public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = (List<User>) userDao.findAll();
         logger.info(users.get(0).toString());
-
         if (users.isEmpty()) {
             logger.info("There is no users");
             return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
@@ -67,12 +72,13 @@ public class UserController {
 
     /**
      * creates single user and persitance to the database
+     *
      * @param userPassed
      * @return
      */
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateUser(@RequestBody User userPassed){
+    public ResponseEntity<Void> updateUser(@RequestBody User userPassed) {
         logger.info("Creating user" + userPassed.getUsername());
         User user = userDao.findByUsername(userPassed.getUsername());
         /**
@@ -80,7 +86,7 @@ public class UserController {
          */
         if (!Objects.equals(user, null)) {
             logger.info("A user with name " + userPassed.getUsername() + " already exist they will be updated");
-        //    user.updateUser(userPassed);
+            //    user.updateUser(userPassed);
             return new ResponseEntity<Void>(HttpStatus.CREATED);
         }
         return new ResponseEntity<Void>(HttpStatus.CONFLICT);

@@ -13,13 +13,20 @@ import javax.persistence.Id;
  */
 @Entity
 @Service
-public class FriendsName{
+@Scope("prototype")
+public class FriendsName {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     String name;
 
+    public FriendsName(String name) {
+        this.name = name;
+    }
+
+    public FriendsName() {
+    }
 
     public String getName() {
         return name;

@@ -3,22 +3,61 @@
  */
 var app = angular.module('locator', []);
 
-app.controller('appController', function ($scope, $rootScope, $http) {
+app.controller('appController', function ($scope ,$rootScope,$window, $http) {
+    $scope.isUsersTableHidden = true;
+    $scope.isFriendsTableHidden = true;
 
-    $scope.listFriends = function () {
 
+
+    $scope.addToFriends = function (friendsUsername) {
+        console.log("addToFriends function");
+        $http({
+            method: 'POST', url: 'friend/addfriend/' + friendsUsername + "/" + $rootScope.username,
+            headers: {'Authorization': $rootScope.authenticationHeader}
+        }).then(function (response) {
+
+        }, function (response) {
+        })
+    }
+    $scope.listUsers = function () {
+        console.log("listUsers function");
+        $scope.isUsersTableHidden = false;
+        $scope.isFriendsTableHidden = true;
         $http({
             method: 'GET', url: 'user',
             headers: {'Authorization': $rootScope.authenticationHeader}
         }).then(function (response) {
-            $scope.ifFriendsHidden = false;
             $scope.names = response.data;
         }, function (response) {
-
         })
+    }
+    $scope.listFriends = function () {
+        console.log("list friends function");
+        $scope.isUsersTableHidden = true;
+        $scope.isFriendsTableHidden = false;
+        $http({
+            method: 'GET', url: 'friend/' + $rootScope.username,
+            headers: {'Authorization': $rootScope.authenticationHeader}
+        }).then(function (response) {
+            //return list of user friends who are the same type as user
+            $scope.friends = response.data;
+        }, function (response) {
+        })}
 
+    $scope.getUsers = function () {
+        $http({
+            method: 'GET', url: 'friend/' + $rootScope.username,
+            headers: {'Authorization': $rootScope.authenticationHeader}
+        }).then(function (response) {
+            //return list of user friends who are the same type as user
+            $scope.friends = response.data;
+        }, function (response) {
+        })
     }
 
+    $scope.logout = function () {
+        $window.location.reload();
+    }
 });
 
 app.controller('loginController', function ($scope, $rootScope, $http) {

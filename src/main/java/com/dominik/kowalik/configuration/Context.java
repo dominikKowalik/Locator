@@ -17,6 +17,9 @@ import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by dominik on 2016-10-20.
  */
@@ -46,5 +49,9 @@ public class Context{
 
     @Bean
     @Scope("prototype")
-    public FriendsName createUseresName(){return new FriendsName();}
+    public List<FriendsName> friendslist(){return new LinkedList<>();}
+
+    @Bean
+    @Scope("prototype")
+    public List<User> usersList(){return new LinkedList<>();}
 }
