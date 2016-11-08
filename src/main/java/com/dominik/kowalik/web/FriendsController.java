@@ -34,18 +34,46 @@ public class FriendsController {
      * @param friendsname
      * @return
      */
-    @PostMapping("/addfriend/{friendsname}/{username}")
-    public ResponseEntity<User> addFriend(@PathVariable("username") String username,
-                                          @PathVariable("friendsname") String friendsname) {
-        logger.info("dodawanie znajomego");
-        FriendsName friend = new FriendsName(friendsname);
+
+
+    @DeleteMapping("/deletefriend/{friendsname}/{username}")
+    public ResponseEntity<User> deleteFriend(@PathVariable("username") String username,
+                                             @PathVariable("friendsname") String friendsname) {
         User user = userDao.findByUsername(username);
 
+        if (Objects.equals(user, null)) {
+            logger.info("user " + username + " doesnt exist");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+
+        for (int i = 0; i < user.getFriends().size(); i++) {
+            if (Objects.equals(friendsname, user.getFriends().get(i).getName())) {
+                logger.info("usuwanie usera" + user.getFriends().get(i));
+                user.getFriends().remove(i);
+                logger.info(user.toString());
+            }
+        }
+        friendsNameDao.save(user.getFriends());
+        userDao.save(user);
+        return new ResponseEntity<User>(HttpStatus.OK);
+    }
+
+    @PostMapping("/addfriend/{friendsname}/{username}")
+    public ResponseEntity<User> addFriend(@PathVariable("username") String username,
+                                          @PathVariable("friendsname") String fname) {
+        logger.info("dodawanie znajomego");
+        FriendsName friend = new FriendsName(fname);
+        User user = userDao.findByUsername(username);
         if (Objects.equals(user, null)) {
             logger.info("user names" + username + "doesnt exists");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
-
+        for (FriendsName friendsName : user.getFriends()) {
+            if (Objects.equals(fname, friendsName.getName())) {
+                logger.info("friend allready exsits in friends list");
+                return new ResponseEntity<User>(HttpStatus.CONFLICT);
+            }
+        }
         user.addFriend(friend);
         friendsNameDao.save(friend);
         userDao.save(user);
@@ -55,13 +83,13 @@ public class FriendsController {
     /**
      * returning user's friendlist
      */
+
     @Autowired
     @Qualifier("usersList")
     List<User> usersList;
 
     @GetMapping("{username}")
-    public ResponseEntity<List<User>> listFriends(@PathVariable("username") String username
-    ) {
+    public ResponseEntity<List<User>> listFriends(@PathVariable("username") String username) {
         logger.info("first line listFriends method");
         User user = userDao.findByUsername(username);
         usersList.clear();

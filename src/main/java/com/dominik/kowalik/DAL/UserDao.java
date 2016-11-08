@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Transactional
 @Repository
-public interface UserDao extends CrudRepository<User, Long>{
+public interface UserDao extends CrudRepository<User, Long> {
     public User findByUsername(String username);
 }
 

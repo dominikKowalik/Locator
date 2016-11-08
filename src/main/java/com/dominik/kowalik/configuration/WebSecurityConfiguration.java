@@ -67,7 +67,7 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
         private String REALM = "MY_TEST_REALM";
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().authorizeRequests().antMatchers("/","/index.js").permitAll().antMatchers("/register").permitAll().anyRequest().
+            http.csrf().disable().authorizeRequests().antMatchers("/index.html","/index.js").permitAll().antMatchers("/register").permitAll().anyRequest().
                     authenticated().and().httpBasic()
                     .authenticationEntryPoint(getBasicAuthEntryPoint()).and().
                     sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

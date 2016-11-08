@@ -20,8 +20,6 @@ import java.util.List;
  */
 
 
-
-
 @Entity
 @Service
 @Scope(value = "prototype")
@@ -52,7 +50,7 @@ public class User{
 
    @ElementCollection
    @Autowired
-   @Qualifier("friendslist")
+       @Qualifier("friendslist")
     private List<FriendsName> friends;
 
     @Autowired

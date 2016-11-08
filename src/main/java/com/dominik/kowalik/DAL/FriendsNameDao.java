@@ -12,4 +12,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository
 public interface FriendsNameDao extends CrudRepository<FriendsName, Long> {
+ public FriendsName deleteByName(String friendName);
 }

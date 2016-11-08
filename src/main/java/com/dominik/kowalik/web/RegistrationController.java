@@ -44,16 +44,9 @@ public class RegistrationController implements ApplicationContextAware {
     @Autowired
     FriendsNameDao usersNameDao;
 
-    @GetMapping("/exists")
-    public ResponseEntity<User> exists(){
-        logger.info("exists");
-        return new ResponseEntity<User>(HttpStatus.OK);
-    }
-
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody Account account) {
         Account account1 = (Account) applicationContext.getBean("account");
-
         if (Objects.equals(accountDao.findByUsername(account.getUsername()), null)) {
             logger.info("creating account" + account.toString());
             account1.setEmail(account.getEmail());
@@ -83,7 +76,7 @@ public class RegistrationController implements ApplicationContextAware {
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
         accountDao.delete(id);
-        return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<User>(HttpStatus.OK);
     }
 
     /**

@@ -33,6 +33,22 @@ public class UserController {
     @Autowired
     FriendsNameDao friendsNameDao;
 
+    @PostMapping(value = "updatestatus/{username}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateStatus(@PathVariable("username") String username,
+                                             @PathVariable("status") String status) {
+        User user = userDao.findByUsername(username);
+        if (Objects.equals(user, null)) {
+            logger.info("user doesnt exsits");
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+        user.setStatement(status);
+        userDao.save(user);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+
+
+    }
+
+
     //    CRUD
     @GetMapping()
     public ResponseEntity<List<User>> listAllUsers() {
@@ -68,8 +84,6 @@ public class UserController {
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
-
-
     /**
      * creates single user and persitance to the database
      *

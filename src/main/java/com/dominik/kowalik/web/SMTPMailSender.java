@@ -16,10 +16,7 @@ public class SMTPMailSender {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper;
 
-
         helper = new MimeMessageHelper(message, true);
-
-
         helper.setSubject(subject);
         helper.setTo(to);
         helper.setText(body, true);

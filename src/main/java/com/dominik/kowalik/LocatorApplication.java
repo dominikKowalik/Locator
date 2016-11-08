@@ -10,3 +10,4 @@ public class LocatorApplication {
 		SpringApplication.run(LocatorApplication.class, args);
 	}
 }
+
