@@ -1,12 +1,15 @@
 package com.dominik.kowalik.web;
 
 import com.dominik.kowalik.DAL.FriendsNameDao;
+import com.dominik.kowalik.DAL.LocationInfoDao;
 import com.dominik.kowalik.model.FriendsName;
+import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
 import com.dominik.kowalik.DAL.UserDao;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,10 +31,35 @@ public class UserController {
     private final Logger logger = LoggerFactory.getLogger("**************INFO**************");
 
     @Autowired
+    ApplicationContext applicationContext;
+
+    @Autowired
+    LocationInfoDao locationInfoDao;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
     FriendsNameDao friendsNameDao;
+
+    @PostMapping(value = "updatecoordinates/{username}")
+    public ResponseEntity<Void> updateCoordinates(@PathVariable("username") String username, @RequestBody LocationInfo locationInfo) {
+
+
+        logger.info("updateCoordinates function location: " + locationInfo.toString());
+
+        User user = userDao.findByUsername(username);
+        if (Objects.equals(user, null)) {
+            logger.info("user doesnt exsits");
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+        logger.info("user exists");
+        user.setLocationInfo(locationInfo);
+        locationInfoDao.save(locationInfo);
+        userDao.save(user);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 
     @PostMapping(value = "updatestatus/{username}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateStatus(@PathVariable("username") String username,
@@ -44,10 +72,7 @@ public class UserController {
         user.setStatement(status);
         userDao.save(user);
         return new ResponseEntity<Void>(HttpStatus.OK);
-
-
     }
-
 
     //    CRUD
     @GetMapping()
@@ -84,6 +109,7 @@ public class UserController {
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
+
     /**
      * creates single user and persitance to the database
      *

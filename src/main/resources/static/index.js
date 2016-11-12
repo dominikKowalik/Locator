@@ -104,12 +104,18 @@ app.controller('loginController', function ($scope, $rootScope, $http, $window) 
     $scope.isRemindPassFormHidden = true;
     $rootScope.isAppHidden = true;
 
-    $scope.remindPassword = function () {
+    $scope.remindPassword = function(){
         if($scope.emailAdress == undefined){
-
-
             return;
         }
+
+        console.log($scope.emailAdress)
+
+        $http.post("register/reset_password/" + $scope.emailAdress).then(function (response){
+            console.log("password has been restarted");
+        }, function (response) {
+            console.log("password has been restarted");
+        });
     }
 
     $scope.showRemindPassForm = function () {

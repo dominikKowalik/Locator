@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +35,6 @@ public class FriendsController {
      * @param friendsname
      * @return
      */
-
 
     @DeleteMapping("/deletefriend/{friendsname}/{username}")
     public ResponseEntity<User> deleteFriend(@PathVariable("username") String username,
@@ -74,15 +74,22 @@ public class FriendsController {
                 return new ResponseEntity<User>(HttpStatus.CONFLICT);
             }
         }
+
         user.addFriend(friend);
         friendsNameDao.save(friend);
         userDao.save(user);
         return new ResponseEntity<User>(HttpStatus.OK);
     }
 
+
+
     /**
      * returning user's friendlist
      */
+
+
+
+
 
     @Autowired
     @Qualifier("usersList")

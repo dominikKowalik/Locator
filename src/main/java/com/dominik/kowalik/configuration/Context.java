@@ -1,6 +1,7 @@
 package com.dominik.kowalik.configuration;
 
 
+import com.dominik.kowalik.Helpers.PasswordGenerator;
 import com.dominik.kowalik.model.Account;
 import com.dominik.kowalik.model.FriendsName;
 import com.dominik.kowalik.model.LocationInfo;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
@@ -27,6 +29,9 @@ import java.util.List;
 @Configuration
 @ComponentScan("com.dominik.kowalik")
 public class Context{
+
+    @Bean("passwordGenerator")
+    public PasswordGenerator passwordGenerator(){return new PasswordGenerator(); }
 
     @Bean("httpHeaders")
     public HttpHeaders httpHeaders(){

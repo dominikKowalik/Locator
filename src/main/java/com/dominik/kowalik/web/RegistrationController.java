@@ -5,7 +5,8 @@ import com.dominik.kowalik.DAL.AccountDao;
 import com.dominik.kowalik.DAL.FriendsNameDao;
 import com.dominik.kowalik.DAL.LocationInfoDao;
 import com.dominik.kowalik.DAL.UserDao;
-  import com.dominik.kowalik.model.Account;
+import com.dominik.kowalik.Helpers.PasswordGenerator;
+import com.dominik.kowalik.model.Account;
 import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.Objects;
 
 /**
@@ -28,7 +30,6 @@ import java.util.Objects;
 @RestController
 @RequestMapping("register")
 public class RegistrationController implements ApplicationContextAware {
-
     private final Logger logger = LoggerFactory.getLogger("**************INFO**************");
     private ApplicationContext applicationContext;
 
@@ -43,6 +44,36 @@ public class RegistrationController implements ApplicationContextAware {
 
     @Autowired
     FriendsNameDao usersNameDao;
+
+    @Autowired
+    SMTPMailSender smtpMailSender;
+
+    @Autowired
+    PasswordGenerator passwordGenerator;
+
+    @PostMapping("reset_password/{email:.+}")
+    public ResponseEntity<Void> sendmail(@PathVariable("email") String email){
+
+        logger.info(email);
+
+
+
+        Account account = accountDao.findByEmail(email);
+        logger.info("konto po emailu" + account.toString());
+
+        String randomPassword = passwordGenerator.getRandomPassword(15);
+        account.setPassword(randomPassword);
+        logger.info("resetowanie hasła " + account.getUsername());
+        try{
+            smtpMailSender.send(email,"Przypominienie hasła w aplikacji lokalizator","Nowe hasło:" + randomPassword);
+            accountDao.save(account);
+            logger.info("hasło zresetowane");
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }catch (MessagingException e) {
+            logger.info("hasło niezresetowane");
+            return new ResponseEntity<Void>(HttpStatus.BAD_GATEWAY);
+        }
+    }
 
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody Account account) {
@@ -86,7 +117,7 @@ public class RegistrationController implements ApplicationContextAware {
      */
 
     @DeleteMapping()
-    public ResponseEntity<User> deleteAllAccounts(){
+    public ResponseEntity<User> deleteAllAccounts() {
         logger.info("Deleting all users");
         accountDao.deleteAll();
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);

@@ -16,6 +16,11 @@ public class LocationInfo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    public LocationInfo(double latitude, double longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public double getLongitude() {
         return longitude;
     }
