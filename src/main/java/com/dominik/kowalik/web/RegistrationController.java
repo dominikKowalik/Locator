@@ -20,19 +20,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Created by dominik on 2016-10-26.
+ * do tego kontrolera mają dostęp niezlogowani użytkownicy
  */
 
 @RestController
 @RequestMapping("register")
-public class RegistrationController implements ApplicationContextAware {
-    private final Logger logger = LoggerFactory.getLogger("**************INFO**************");
-    private ApplicationContext applicationContext;
-
+public class RegistrationController{
     @Autowired
     AccountDao accountDao;
 
@@ -51,81 +51,71 @@ public class RegistrationController implements ApplicationContextAware {
     @Autowired
     PasswordGenerator passwordGenerator;
 
+    Predicate checkIsAccountNull = a -> Objects.equals(null,a);
+    /**
+     * metoda wysyłająca przypomnienie hasła na adres email użytkownika kóry to on podaje przy rejestracji
+     *
+     * @param email adres email uzytkownika ktory zapomnial hasło
+     * @return zwracany status OK - 200 w przpadku gdy hasło zostanie pomyślnie wysłane na podany adres status CONFLICT - 409 gdy ta operacja się nie uda
+     */
     @PostMapping("reset_password/{email:.+}")
-    public ResponseEntity<Void> sendmail(@PathVariable("email") String email){
-
-        logger.info(email);
-
-
-
+    public ResponseEntity<Void> sendmail(@PathVariable("email") String email) {
         Account account = accountDao.findByEmail(email);
-        logger.info("konto po emailu" + account.toString());
-
+        if(checkIsAccountNull.test(account))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         String randomPassword = passwordGenerator.getRandomPassword(15);
         account.setPassword(randomPassword);
-        logger.info("resetowanie hasła " + account.getUsername());
-        try{
-            smtpMailSender.send(email,"Przypominienie hasła w aplikacji lokalizator","Nowe hasło:" + randomPassword);
+        try {
+            smtpMailSender.sendPasswordRemind(email,randomPassword);
             accountDao.save(account);
-            logger.info("hasło zresetowane");
-            return new ResponseEntity<Void>(HttpStatus.OK);
+
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch (MessagingException e) {
-            logger.info("hasło niezresetowane");
-            return new ResponseEntity<Void>(HttpStatus.BAD_GATEWAY);
+
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-
+    /**
+     * rejestracja użytkownika ustawianie hasła, mejla, nazwy użtkownika, lokalizacji i tworzenie konta publicznego \n
+     * hibernate działa w trybie MERGE czyli trzeba zapisywać wszytkie osobne obiekty w bazie
+     * @param account konto nowego użytkownika które jest zapisywane w bazie
+     * @return status 409 - CONFLICT gdy podany użytkownik nie istnieje, status 200 - OK gdy użytkownik jeszcze nie istnieje i zostanie zapisany pomyślnie
+     */
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody Account account) {
-        Account account1 = (Account) applicationContext.getBean("account");
-        if (Objects.equals(accountDao.findByUsername(account.getUsername()), null)) {
-            logger.info("creating account" + account.toString());
-            account1.setEmail(account.getEmail());
-            account1.setPassword(account.getPassword());
-            account1.setUsername(account.getUsername());
-            account1.getUser().setUsername(account.getUsername());
-            account1.getUser().setUsername(account1.getUsername());
-
-            locationInfoDao.save(account1.getUser().getLocationInfo());
-            usersNameDao.save(account1.getUser().getFriends());
-            userDao.save(account1.getUser());
-            accountDao.save(account1);
-
-            HttpHeaders httpHeaders = (HttpHeaders) applicationContext.getBean("httpHeaders");
-            return new ResponseEntity<User>(httpHeaders, HttpStatus.OK);
+        if (checkIsAccountNull.test(accountDao.findByUsername(account.getUsername()))) {
+            locationInfoDao.save(account.getUser().getLocationInfo());
+            usersNameDao.save(account.getUser().getFriends());
+            userDao.save(account.getUser());
+            accountDao.save(account);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        logger.info("account" + account.toString() + "already exists");
-        return new ResponseEntity<User>(HttpStatus.CONFLICT);
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<User> deleteAccount(@PathVariable("id") long id) {
-        logger.info("Fetching and deleting user with id " + id);
-        Account account = accountDao.findOne(id);
-        if (Objects.equals(account, null)) {
-            logger.info("unable to delete. User with id" + " not found");
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
-        accountDao.delete(id);
-        return new ResponseEntity<User>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     /**
-     * delete all users
-     *
+     * usuwanie użytkownika po id
+     * @param id klucz główny użytkownika w bazie
+     * @return 200 - istnieje i usuniety w przeciwnym razie 404 - Not Found
+     */
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<User> deleteAccount(@PathVariable("id") long id) {
+        Account account = accountDao.findOne(id);
+        if (checkIsAccountNull.test(account))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        accountDao.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * usuwanie wszystkich użytkowników
      * @return
      */
 
     @DeleteMapping()
     public ResponseEntity<User> deleteAllAccounts() {
-        logger.info("Deleting all users");
-        accountDao.deleteAll();
-        return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+         accountDao.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
 

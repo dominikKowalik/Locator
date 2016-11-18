@@ -10,9 +10,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SMTPMailSender {
+
+    /**
+     * wstrzykniecie obiektu klasy JavaMailSender skonfigurowanego w application.propoerties
+     */
     @Autowired
     private JavaMailSender javaMailSender;
 
+    /**
+     * wysyłanie maila, tworzenie obiektu MIME - Multipurpose Internet Mail Extensions ustawienie \n
+     * odbiorcy, tematu i treści wiadomości
+     * @param to
+     * @param subject
+     * @param body
+     * @throws MessagingException
+     */
 
     public void send(String to, String subject, String body) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -24,4 +36,10 @@ public class SMTPMailSender {
 
         javaMailSender.send(message);
     }
+
+    public void sendPasswordRemind(String to, String randomPassword) throws MessagingException {
+        send(to, "Przypominienie hasła w aplikacji lokalizator", "Nowe hasło:" + randomPassword);
+    }
+
+
 }

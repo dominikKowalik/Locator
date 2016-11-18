@@ -4,7 +4,9 @@ import com.dominik.kowalik.DAL.AccountDao;
 import com.dominik.kowalik.model.Account;
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
@@ -34,11 +36,18 @@ import java.io.IOException;
 
 
 @Configuration
+@ComponentScan("com.dominik.kowalik")
 public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
 
     @Autowired
     AccountDao accountDao;
 
+    /**
+     * wykorzystuje baze danych do autentykacji użytkowników
+     * @param auth
+     * @throws Exception
+     */
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService());
@@ -61,11 +70,20 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
         };
     }
 
+
     @EnableWebSecurity
     @Configuration
     class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         private String REALM = "MY_TEST_REALM";
 
+
+        /**
+         * konfiguracja filtrów bezpieczeństwa: wyłączenie ochrony przed atakami typu csrf(Cross-site request forgery \n
+         * Dodanie adresów URL do których dostęp będą mieli nie zalogowani użytkownicy: /, index.html, index.js i dostęp do wszystkich adresów zaczynających się od /register/\n
+         * pozostałe zapytania do serwera wymagają autentykacji httpBasic() aktywuje autentykacje basic authentication
+         * @param http
+         * @throws Exception
+         */
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.csrf().disable().authorizeRequests().antMatchers("/", "/index.html", "/index.js").permitAll().

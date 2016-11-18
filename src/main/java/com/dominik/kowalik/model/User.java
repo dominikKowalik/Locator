@@ -24,7 +24,6 @@ import java.util.List;
 @Service
 @Scope(value = "prototype")
 public class User{
-
     public void setLocationInfo(LocationInfo locationInfo) {
         this.locationInfo = locationInfo;
     }
@@ -35,6 +34,7 @@ public class User{
 
     private String username;
     private String statement;
+    private String recentActivity;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,17 +44,17 @@ public class User{
         this.friends = friends;
     }
 
-    public void addFriend(FriendsName username){
+    public void addFriend(FriendsName username) {
         friends.add(username);
     }
 
-   @ElementCollection
-   @Autowired
-       @Qualifier("friendslist")
+    @ElementCollection
+    @Autowired
+    @Qualifier("friendslist")
     private List<FriendsName> friends;
 
     @Autowired
-    @OneToOne( cascade={CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private LocationInfo locationInfo;
 
     public String getUsername() {
@@ -65,20 +65,7 @@ public class User{
         this.username = userName;
     }
 
-
-    //    public static float distFrom(User user1, User user2) {
-//        double earthRadius = 6371000; //meters
-//        double dLat = Math.toRadians(user2.getLocationInfo().getLatitude()-user1.getLocationInfo().getLatitude());
-//        double dLng = Math.toRadians(user2.getLocationInfo().getLongitude()-user2.getLocationInfo().getLongitude());
-//        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-//                Math.cos(Math.toRadians(user1.getLocationInfo().getLatitude())) *
-//                        Math.cos(Math.toRadians(user2.getLocationInfo().getLongitude())) *
-//                        Math.sin(dLng/2) * Math.sin(dLng/2);
-//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//        float dist = (float) (earthRadius * c);
-//        return dist;
-//    }
-    public  User(){
+    public User() {
     }
 
     public LocationInfo getLocationInfo() {

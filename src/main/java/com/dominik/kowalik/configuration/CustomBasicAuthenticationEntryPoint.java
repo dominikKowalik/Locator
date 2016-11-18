@@ -2,18 +2,13 @@ package com.dominik.kowalik.configuration;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import sun.util.calendar.BaseCalendar;
+
 
 public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
@@ -21,6 +16,9 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
        return System.currentTimeMillis();
     }
 
+    /**
+     * Po braku pomyślnej autentykacji wysyłana jest do klienta odpowiedź skonfigurowana poniżej
+     */
     @Override
     public void commence(final HttpServletRequest request,
                          final HttpServletResponse response,

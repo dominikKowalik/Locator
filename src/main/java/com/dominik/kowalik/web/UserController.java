@@ -2,6 +2,7 @@ package com.dominik.kowalik.web;
 
 import com.dominik.kowalik.DAL.FriendsNameDao;
 import com.dominik.kowalik.DAL.LocationInfoDao;
+import com.dominik.kowalik.Helpers.TimeProvider;
 import com.dominik.kowalik.model.FriendsName;
 import com.dominik.kowalik.model.LocationInfo;
 import com.dominik.kowalik.model.User;
@@ -20,11 +21,15 @@ import javax.mail.MessagingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Created by dominik on 2016-10-19.
  */
 
+/**
+ * dostęp mają tylko zalogowani użytkownicy
+ */
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -42,93 +47,89 @@ public class UserController {
     @Autowired
     FriendsNameDao friendsNameDao;
 
+    @Autowired
+    TimeProvider timeProvider;
+
+    Predicate<User> checkIsUserNull = u -> Objects.equals(null, u);
+
+    /**
+     * aktualizowanie lokalizacji konkretnego użyktownika
+     *
+     * @param username     nazwa użytkownika
+     * @param locationInfo obiekt przechowujacy nową lokalizacje użytkownika
+     * @return
+     */
     @PostMapping(value = "updatecoordinates/{username}")
     public ResponseEntity<Void> updateCoordinates(@PathVariable("username") String username, @RequestBody LocationInfo locationInfo) {
 
-
-        logger.info("updateCoordinates function location: " + locationInfo.toString());
-
         User user = userDao.findByUsername(username);
-        if (Objects.equals(user, null)) {
-            logger.info("user doesnt exsits");
+        if (checkIsUserNull.test(user))
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
-        logger.info("user exists");
         user.setLocationInfo(locationInfo);
         locationInfoDao.save(locationInfo);
         userDao.save(user);
-
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    /**
+     * aktualizowanie statusu użykwonika
+     *
+     * @param username nazwa uzyktownika
+     * @param status   status
+     * @return
+     */
     @PostMapping(value = "updatestatus/{username}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateStatus(@PathVariable("username") String username,
                                              @PathVariable("status") String status) {
         User user = userDao.findByUsername(username);
-        if (Objects.equals(user, null)) {
-            logger.info("user doesnt exsits");
+        if (checkIsUserNull.test(user))
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
         user.setStatement(status);
         userDao.save(user);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    //    CRUD
+    /**
+     * wylistowanie wszystkich użytkownikó
+     *
+     * @return
+     */
     @GetMapping()
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = (List<User>) userDao.findAll();
         logger.info(users.get(0).toString());
-        if (users.isEmpty()) {
-            logger.info("There is no users");
+        if (users.isEmpty())
             return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
-        }
+        users.sort((a, b) -> a.getUsername().compareTo(b.getUsername()));
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 
-//    //     Retrives single user
-//    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<User> getUser(@PathVariable("id") long id){
-//        logger.info("Fetching user with id " + id);
-//        User user = userDao.findOne(id);
-//        if (Objects.equals(user, null)) {
-//            logger.info("User with id" + id + "not found");
-//            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<User>(user, HttpStatus.OK);
-//    }
-
-    //     Retrives single user
+    /**
+     * pobranie konkretnego uzykwonika z bazy
+     *
+     * @param username nazwa uzytkownika
+     * @return
+     */
     @GetMapping(value = "/byname/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUser(@PathVariable("username") String username) {
-        logger.info("Fetching user with name" + username);
+
         User user = userDao.findByUsername(username);
-        if (Objects.equals(user, null)) {
-            logger.info("User with username" + username + "not found");
+        if (checkIsUserNull.test(user))
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     /**
-     * creates single user and persitance to the database
+     * zapis uzyktownika do bazy
      *
-     * @param userPassed
+     * @param userPassed uzytkwonik do zapisania w bazie danych
      * @return
      */
-
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateUser(@RequestBody User userPassed) {
-        logger.info("Creating user" + userPassed.getUsername());
         User user = userDao.findByUsername(userPassed.getUsername());
-        /**
-         * the way to update user if exists they will be auto-perist by hibernate
-         */
-        if (!Objects.equals(user, null)) {
-            logger.info("A user with name " + userPassed.getUsername() + " already exist they will be updated");
-            //    user.updateUser(userPassed);
+        if (checkIsUserNull.test(user))
             return new ResponseEntity<Void>(HttpStatus.CREATED);
-        }
         return new ResponseEntity<Void>(HttpStatus.CONFLICT);
     }
 }
