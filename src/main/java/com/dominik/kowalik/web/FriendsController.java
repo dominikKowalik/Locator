@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 @RequestMapping("friend")
 @RestController
 public class FriendsController {
-    private final Logger logger = LoggerFactory.getLogger("**************INFO**************");
     @Autowired
     UserDao userDao;
     @Autowired
@@ -68,7 +67,6 @@ public class FriendsController {
     @PostMapping("/addfriend/{friendsname}/{username}")
     public ResponseEntity<User> addFriend(@PathVariable("username") String username,
                                           @PathVariable("friendsname") String fname){
-        logger.info("dodawanie znajomego");
         FriendsName friend = new FriendsName(fname);
         User user = userDao.findByUsername(username);
         if (checkIsUserNull.test(user)) {

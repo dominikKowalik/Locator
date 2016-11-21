@@ -33,8 +33,6 @@ import java.util.function.Predicate;
 @RestController
 @RequestMapping("user")
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger("**************INFO**************");
-
     @Autowired
     ApplicationContext applicationContext;
 
@@ -61,7 +59,6 @@ public class UserController {
      */
     @PostMapping(value = "updatecoordinates/{username}")
     public ResponseEntity<Void> updateCoordinates(@PathVariable("username") String username, @RequestBody LocationInfo locationInfo) {
-
         User user = userDao.findByUsername(username);
         if (checkIsUserNull.test(user))
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -97,7 +94,6 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = (List<User>) userDao.findAll();
-        logger.info(users.get(0).toString());
         if (users.isEmpty())
             return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
         users.sort((a, b) -> a.getUsername().compareTo(b.getUsername()));
@@ -111,8 +107,7 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/byname/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUser(@PathVariable("username") String username) {
-
+    public ResponseEntity<User> getUser(@PathVariable("username") String username){
         User user = userDao.findByUsername(username);
         if (checkIsUserNull.test(user))
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);

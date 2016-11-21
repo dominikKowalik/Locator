@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
    private Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    @Pointcut("(execution(org.springframework.http.ResponseEntity<Void> *(..)))")
+    @Pointcut("(within(com.dominik.kowalik.web.*))")
     public void allMethods(){}
 
     @Before("allMethods()")
